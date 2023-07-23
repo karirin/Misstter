@@ -11,11 +11,63 @@ struct ContentView: View {
     @ObservedObject private var viewModel = TweetViewModel()
     @State var showAnotherView_post: Bool = false
     @State private var inputText: String = ""
+    
+    struct RefreshControl: View {
+        
+        @State private var isRefreshing = false
+        var coordinateSpaceName: String
+        var onRefresh: () -> Void
+        
+        var body: some View {
+            GeometryReader { geometry in
+                if geometry.frame(in: .named(coordinateSpaceName)).midY > 50 {
+                    Spacer()
+                        .onAppear() {
+                            isRefreshing = true
+                        }
+                } else if geometry.frame(in: .named(coordinateSpaceName)).maxY < 10 {
+                    Spacer()
+                        .onAppear() {
+                            if isRefreshing {
+                                isRefreshing = false
+                                onRefresh()
+                            }
+                        }
+                }
+                HStack {
+                    Spacer()
+                    if isRefreshing {
+                        ProgressView()
+                    } else {
+                        Text("⬇︎")
+                            .font(.system(size: 28))
+                    }
+                    Spacer()
+                }
+            }.padding(.top, -50)
+        }
+    }
 
     var body: some View {
         NavigationView {
             VStack{
+                HStack{
+                    Text("")
+                    Spacer()
+                    Text("目標")
+                        .fontWeight(.bold) // <- Change this line
+                    Spacer()
+                    Text("")
+                }
+                .padding()
+                .background(Color("green"))
+                .foregroundColor(.white)
+                .frame(height:50)
+                .font(.system(size: 20))
                 ScrollView {
+                    RefreshControl(coordinateSpaceName: "RefreshControl", onRefresh: {
+                        print("doRefresh()")
+                    })
                     VStack {
                         ForEach(viewModel.tweets, id: \.self) { tweet in
                             HStack{
@@ -24,21 +76,36 @@ struct ContentView: View {
                                         .scaledToFill()
                                         .frame(width:80,height:80)
                                         .cornerRadius(75)
-//                                        .padding()
-//                                        .background(
-//                                            RoundedRectangle(cornerRadius: 30)
-//                                                .fill(Color(red: 0.2, green: 0.68, blue: 0.9, opacity: 1.0))
-//                                        )
                                 VStack (alignment: .leading){
                                     Text("りょうや")
                                     .fontWeight(.bold)
                                     Text(tweet.text)
+                                    HStack{
+                                        Button(action: {
+                                            viewModel.toggleLike(tweet: tweet)
+                                        }) {
+                                            Image(systemName: tweet.isLiked ? "heart.fill" : "heart")
+                                        }
+                                        Text("\(tweet.likes)") // <- Add this line
+                                    }
+                                    .padding(.top,5)
                                     Spacer()
                                 }
                                 .padding(.top,5)
                                 Spacer()
                             }
-                            .padding()
+                            .frame(maxWidth:.infinity)
+                            .padding(5)
+                            .overlay(
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .padding(.horizontal, -16)
+                                    .foregroundColor(Color("gray")),
+                                alignment: .bottom
+                            )
+                        }
+                        .refreshable {
+                            await Task.sleep(1000000000)
                         }
                     }
                 }
@@ -63,7 +130,7 @@ struct ContentView: View {
                                         .foregroundColor(.white)
                                         .font(.system(size: 24)) // --- 4
                                 }).frame(width: 60, height: 60)
-                                    .background(Color(red: 0.2, green: 0.68, blue: 0.9, opacity: 1.0))
+                                    .background(Color("green"))
                                     .cornerRadius(30.0)
                                     .shadow(color: Color(.black).opacity(0.2), radius: 8, x: 0, y: 4)
                                     .fullScreenCover(isPresented: $showAnotherView_post, content: {
@@ -93,7 +160,8 @@ struct ContentView: View {
                                                     .padding(.horizontal,25)
                                                     .font(.headline)
                                                     .foregroundColor(.white)
-                                                    .background(RoundedRectangle(cornerRadius: 25).fill(Color(red: 0.2, green: 0.68, blue: 0.9, opacity: 1.0)))
+                                                    .background(Color("green"))
+                                                    .cornerRadius(30.0)
                                                 }
                                             }
                                         }

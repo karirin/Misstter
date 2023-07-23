@@ -13,6 +13,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         FirebaseApp.configure()
+        _ = AuthManager.shared // ここでAuthManagerのsharedインスタンスを初期化します
         return true
     }
 }
@@ -21,9 +22,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct missApp: App {
     // 追加
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    //@ObservedObject var authManager = AuthManager.shared // 追加
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+//            if authManager.user == nil {
+//                SignUp()
+//            } else {
+                ContentView()
+//            }
         }
     }
 }

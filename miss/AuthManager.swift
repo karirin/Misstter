@@ -8,15 +8,28 @@
 import SwiftUI
 import Firebase
 
+struct User: Identifiable {
+    let id: String
+    let name: String
+    let icon: String
+}
+
 class AuthManager: ObservableObject {
     @Published var user: User?
-
+    private var db = Database.database().reference()
     static let shared = AuthManager()
 
     init() {
-        user = Auth.auth().currentUser
-        if user == nil {
-            anonymousSignIn()
+        fetchUser()
+    }
+
+    func fetchUser() {
+        guard let firebaseUser = Auth.auth().currentUser else { return }
+        db.child("users").child(firebaseUser.uid).observeSingleEvent(of: .value) { snapshot in
+            guard let value = snapshot.value as? [String: Any] else { return }
+            let name = value["name"] as? String ?? ""
+            let icon = value["icon"] as? String ?? ""
+            self.user = User(id: firebaseUser.uid, name: name, icon: icon)
         }
     }
 
@@ -26,7 +39,19 @@ class AuthManager: ObservableObject {
                 print("Error: \(error.localizedDescription)")
             } else if let result = result {
                 print("Signed in anonymously with user ID: \(result.user.uid)")
-                self.user = result.user
+                self.fetchUser()
+            }
+        }
+    }
+    
+    func createUser(name: String, icon: String) {
+        guard let firebaseUser = Auth.auth().currentUser else { return }
+        let user = ["name": name, "icon": icon]
+        db.child("users").child(firebaseUser.uid).setValue(user) { error, _ in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            } else {
+                self.fetchUser()
             }
         }
     }
@@ -40,7 +65,7 @@ struct AuthManager1: View {
             if authManager.user == nil {
                 Text("Not logged in")
             } else {
-                Text("Logged in with user ID: \(authManager.user!.uid)")
+                Text("Logged in with user ID: \(authManager.user!.id)")
             }
             Button(action: {
                 if self.authManager.user == nil {
