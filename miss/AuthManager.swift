@@ -7,6 +7,8 @@
 
 import SwiftUI
 import Firebase
+import FirebaseStorage
+
 
 struct User: Identifiable {
     let id: String
@@ -20,16 +22,20 @@ class AuthManager: ObservableObject {
     static let shared = AuthManager()
 
     init() {
+        anonymousSignIn()
         fetchUser()
     }
 
     func fetchUser() {
         guard let firebaseUser = Auth.auth().currentUser else { return }
+        print("firebaseUser:\(firebaseUser)")
         db.child("users").child(firebaseUser.uid).observeSingleEvent(of: .value) { snapshot in
             guard let value = snapshot.value as? [String: Any] else { return }
+            print("value:\(value)")
             let name = value["name"] as? String ?? ""
             let icon = value["icon"] as? String ?? ""
             self.user = User(id: firebaseUser.uid, name: name, icon: icon)
+            print("self.user:\(self.user)")
         }
     }
 
@@ -44,17 +50,38 @@ class AuthManager: ObservableObject {
         }
     }
     
-    func createUser(name: String, icon: String) {
-        guard let firebaseUser = Auth.auth().currentUser else { return }
-        let user = ["name": name, "icon": icon]
-        db.child("users").child(firebaseUser.uid).setValue(user) { error, _ in
+    func createUser(name: String, icon: UIImage?) {
+        guard let firebaseUser = Auth.auth().currentUser else { print("user")
+            return }
+        guard let image = icon, let imageData = image.jpegData(compressionQuality: 0.8) else { return }
+        
+        let storageRef = Storage.storage().reference().child("\(firebaseUser.uid).jpg")
+        let metadata = StorageMetadata()
+        metadata.contentType = "image/jpeg"
+        
+        storageRef.putData(imageData, metadata: metadata) { _, error in
             if let error = error {
-                print("Error: \(error.localizedDescription)")
+                print("Errorあ: \(error.localizedDescription)")
             } else {
-                self.fetchUser()
+                storageRef.downloadURL { url, error in
+                    if let error = error {
+                        print("Error: \(error.localizedDescription)")
+                    } else if let url = url {
+                        let user = ["name": name, "icon": url.absoluteString]
+                        self.db.child("users").child(firebaseUser.uid).setValue(user) { error, _ in
+                            if let error = error {
+                                print("Error: \(error.localizedDescription)")
+                            } else {
+                                self.fetchUser()
+                            }
+                        }
+                    }
+                }
             }
         }
     }
+
+
 }
 
 struct AuthManager1: View {

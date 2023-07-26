@@ -12,25 +12,30 @@ import FirebaseCore // 追加
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        FirebaseApp.configure()
-        _ = AuthManager.shared // ここでAuthManagerのsharedインスタンスを初期化します
+//        FirebaseApp.configure()
         return true
     }
 }
 
 @main
 struct missApp: App {
-    // 追加
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    //@ObservedObject var authManager = AuthManager.shared // 追加
+    @ObservedObject var authManager: AuthManager
+    let tweet = Tweet(id: "dummyID", text: "dummyUser", userId: "dummyText", userName: "dummyIconURL", userIcon: "dummyIconURL", imageUrl: "https://default.com", isLiked: false, createdAt: Date())
+
+    init() {
+        FirebaseApp.configure()
+        authManager = AuthManager.shared
+    }
 
     var body: some Scene {
         WindowGroup {
-//            if authManager.user == nil {
-//                SignUp()
-//            } else {
-                ContentView()
-//            }
+            if authManager.user == nil {
+                SignUp()
+            } else {
+                ContentView(tweet: tweet)
+            }
         }
     }
 }
+

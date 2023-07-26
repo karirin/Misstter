@@ -13,25 +13,40 @@ struct SignUp: View {
     @State var showAnotherView_post: Bool = false
     @State private var inputText: String = ""
     @State private var userName: String = ""
-    @State private var userIcon: String = ""
+    @State private var userIcon: UIImage?
+//    @State private var userIcon: String = ""
+    @State private var isImagePickerDisplay = false
 
     var body: some View {
-        if authManager.user == nil {
+//        if authManager.user == nil {
             VStack {
                 TextField("ユーザー名を入力してください", text: $userName)
-                TextField("アイコンを入力してください", text: $userIcon)
+                Button(action: {
+                    self.isImagePickerDisplay = true
+                }) {
+                    Text("アイコンを選択")
+                }
+                .sheet(isPresented: $isImagePickerDisplay) {
+                    ImagePicker(image: self.$userIcon)
+                }
+                if let image = userIcon {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 100)
+                }
+//                TextField("アイコンを入力してください", text: $userIcon)
                 Button(action: {
                     authManager.createUser(name: userName, icon: userIcon)
                 }) {
                     Text("ユーザーを作成")
                 }
             }
-        } else {
-            // 既存のContentViewのコード
-        }
+//        } else {
+//            ContentView()
+//        }
     }
 }
-
 
 struct SignUp_Previews: PreviewProvider {
     static var previews: some View {
