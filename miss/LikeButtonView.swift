@@ -25,10 +25,24 @@ struct LikeButtonView: View {
     var body: some View {
         HStack{
             Button(action: viewModel.toggleLike) {
-                Image(systemName: viewModel.isLiked ? "heart.fill" : "heart")
+                Image(viewModel.isLiked ? "ドンマイ" : "ドンマイ")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width:30,height:30)
             }
             Text("\(viewModel.likesCount)")
+                .fontWeight(.bold)
+                .foregroundColor(viewModel.isLiked ? Color("blueline") : Color.black)
         }
+        .overlay(
+            Ellipse()
+                .fill(viewModel.isLiked ? Color("blue") : Color.clear)
+                .frame(width: 60, height: 40)
+                .overlay(
+                    Ellipse()
+                        .stroke(viewModel.isLiked ? Color("blueline") : Color.clear, lineWidth: 3)
+                )
+        )
     }
 }
 
