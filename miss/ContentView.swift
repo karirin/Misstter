@@ -87,12 +87,14 @@ struct ContentView: View {
                                         VStack (alignment: .leading){
                                             HStack{
                                                 VStack(alignment: .leading){
-                                                    Text(tweetLikeViewModel.tweet.userName)
-                                                        .fontWeight(.bold)
+                                                    HStack{
+                                                        Text(tweetLikeViewModel.tweet.userName)
+                                                            .fontWeight(.bold)
+                                                        Text(timeAgoSinceDate(tweetLikeViewModel.tweet.createdAt))
+                                                                                                                .font(.footnote)
+                                                                                                                .foregroundColor(.gray)
+                                                    }
                                                     Text(tweetLikeViewModel.tweet.text)
-                                                    Text(timeAgoSinceDate(tweetLikeViewModel.tweet.createdAt))
-                                                                                                            .font(.footnote)
-                                                                                                            .foregroundColor(.gray)
                                                 }
                                                 Spacer()
                                             }
@@ -112,7 +114,7 @@ struct ContentView: View {
                                             LikeButtonView(viewModel: LikeButtonViewModel(isLiked: tweetLikeViewModel.tweet.isLiked, likesCount: tweetLikeViewModel.tweet.likes.count, toggleLike: tweetLikeViewModel.toggleLike))
                                             Spacer()
                                         }
-                                        .padding()
+                                        .padding(.bottom)
                                     }
                                 Spacer()
                                 }

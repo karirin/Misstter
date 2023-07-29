@@ -15,7 +15,14 @@ struct DetailView: View {
     @State private var comments: [Comment] = []
     @State private var showingCommentView = false
     @Environment(\.activeView) var activeView
-
+    
+    let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
+        formatter.locale = Locale(identifier: "ja_JP")
+        print("formatter:\(formatter)")
+        return formatter
+    }()
 
     var body: some View {
         ScrollView {
@@ -34,8 +41,7 @@ struct DetailView: View {
                     Spacer()
                 }
                 .padding(.leading)
-                
-                if let imageUrl = URL(string: tweetLikeViewModel.tweet.imageUrl ?? "") {
+                               if let imageUrl = URL(string: tweetLikeViewModel.tweet.imageUrl ?? "") {
                     AsyncImage(url: imageUrl) { image in
                         image.resizable()
                             .scaledToFill()
@@ -46,7 +52,13 @@ struct DetailView: View {
                     .cornerRadius(10)
                     .padding()
                 }
-                
+                HStack{
+                Text(dateFormatter.string(from: tweetLikeViewModel.tweet.createdAt))
+                    Spacer()
+                }
+                .padding(.leading)
+                .padding(.top)
+
                 Divider()
                 HStack{
                     Text("\(tweetLikeViewModel.likeButtonViewModel.likesCount)件のどんまい")
@@ -62,26 +74,66 @@ struct DetailView: View {
                     }
                     .padding(.leading)
                     .padding(5)
+                    
+                    DetailLikeButtonView(viewModel: LikeButtonViewModel(isLiked: tweetLikeViewModel.tweet.isLiked, likesCount: tweetLikeViewModel.tweet.likes.count, toggleLike: tweetLikeViewModel.toggleLike))
                     Spacer()
                 }
                 Divider()
                     .frame(maxWidth:.infinity)
                 ForEach(comments) { comment in
-                    HStack {
-                        CachedImage(url: URL(string: comment.userIcon) ?? URL(string: "https://default.com")!)
-                            .frame(width: 60, height: 60)
-                            .cornerRadius(75)
-                        VStack(alignment: .leading) {
-                            Text(comment.userName)
-                                .fontWeight(.bold)
-                            Text(comment.text)
+                    VStack(alignment: .leading) {
+
+                        HStack {
+                            VStack{
+                                
+                                CachedImage(url: URL(string: comment.userIcon) ?? URL(string: "https://default.com")!)
+                                    .frame(width: 60, height: 60)
+                                    .cornerRadius(75)
+                                Spacer()
+                            }
+                            VStack(alignment: .leading) {
+                                HStack{
+                                    Text(comment.userName)
+                                        .fontWeight(.bold)
+                                    Text(timeAgoSinceDate(comment.createdAt)) // ここでコメントの作成時間を表示します
+                                                        .font(.footnote)
+                                                        .foregroundColor(.gray)
+                                        .font(.footnote)
+                                        .foregroundColor(.gray)
+                                }
+                                Text(comment.text)
+                                HStack{
+                                    if tweet.bestCommentId == nil {
+                                        Button(action: {
+                                            viewModel.setBestComment(tweetId: tweet.id, commentId: comment.id)
+                                        }) {
+                                            Image("フォロー")
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width:50,height:50)
+                                                .padding()
+                                        }
+                                        Spacer()
+                                    }
+                                }
+                                .padding(.leading)
+                                Spacer()
+                            }
+                            Spacer()
+                            if tweet.bestCommentId == comment.id {
+                                Image("フォロー")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width:80,height:80)
+                            }
                         }
+                        .padding(5)
                         Spacer()
                     }
-                    .padding(5)
                     Divider()
                 }
-                Spacer()
+
+//                Spacer()
             }
             .onAppear {
                 viewModel.fetchComments(tweetId: tweet.id) { fetchedComments in
@@ -114,6 +166,37 @@ struct DetailView: View {
                 }
             }
         }
+    }
+    func timeAgoSinceDate(_ date: Date) -> String {
+        let calendar = Calendar.current
+        let now = Date()
+        let components = calendar.dateComponents([.minute, .hour, .day, .weekOfYear, .month, .year], from: date, to: now)
+
+        if let year = components.year, year >= 1 {
+            return year == 1 ? "1年前" : "\(year)年"
+        }
+
+        if let month = components.month, month >= 1 {
+            return month == 1 ? "1ヶ月前" : "\(month)ヶ月"
+        }
+
+        if let weekOfYear = components.weekOfYear, weekOfYear >= 1 {
+            return weekOfYear == 1 ? "1週間前" : "\(weekOfYear)週間"
+        }
+
+        if let day = components.day, day >= 1 {
+            return day == 1 ? "1日前" : "\(day)日"
+        }
+
+        if let hour = components.hour, hour >= 1 {
+            return hour == 1 ? "1時間前" : "\(hour)時間"
+        }
+
+        if let minute = components.minute, minute >= 1 {
+            return minute == 1 ? "1分前" : "\(minute)分"
+        }
+
+        return "たった今"
     }
 }
 //

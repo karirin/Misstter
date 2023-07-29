@@ -21,7 +21,7 @@ class LikeButtonViewModel: ObservableObject {
 
 struct LikeButtonView: View {
     @ObservedObject var viewModel: LikeButtonViewModel
-
+    
     var body: some View {
         HStack{
             Button(action: viewModel.toggleLike) {
@@ -33,20 +33,40 @@ struct LikeButtonView: View {
             Text("\(viewModel.likesCount)")
                 .fontWeight(.bold)
                 .foregroundColor(viewModel.isLiked ? Color("blueline") : Color.black)
+            Spacer()
         }
-        .overlay(
-            Ellipse()
-                .fill(viewModel.isLiked ? Color("blue") : Color.clear)
-                .frame(width: 60, height: 40)
-                .overlay(
-                    Ellipse()
-                        .stroke(viewModel.isLiked ? Color("blueline") : Color.clear, lineWidth: 3)
-                )
-        )
+        //        .overlay(
+        //            Ellipse()
+        //                .fill(viewModel.isLiked ? Color("blue") : Color.clear)
+        //                .frame(width: 60, height: 40)
+        //                .overlay(
+        //                    Ellipse()
+        //                        .stroke(viewModel.isLiked ? Color("blueline") : Color.clear, lineWidth: 3)
+        //                )
+        //        )
     }
 }
 
-
-
-
-
+struct DetailLikeButtonView: View {
+    @ObservedObject var viewModel: LikeButtonViewModel
+    
+    var body: some View {
+        HStack{
+            Button(action: viewModel.toggleLike) {
+                Image(viewModel.isLiked ? "ドンマイ済み" : "ドンマイ")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width:30,height:30)
+            }
+        }
+        //        .overlay(
+        //            Ellipse()
+        //                .fill(viewModel.isLiked ? Color("blue") : Color.clear)
+        //                .frame(width: 60, height: 40)
+        //                .overlay(
+        //                    Ellipse()
+        //                        .stroke(viewModel.isLiked ? Color("blueline") : Color.clear, lineWidth: 3)
+        //                )
+        //        )
+    }
+}
