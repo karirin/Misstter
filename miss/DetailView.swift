@@ -15,6 +15,8 @@ struct DetailView: View {
     @State private var comments: [Comment] = []
     @State private var showingCommentView = false
     @Environment(\.activeView) var activeView
+    @ObservedObject var authManager = AuthManager.shared
+
     
     let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -104,16 +106,18 @@ struct DetailView: View {
                                 Text(comment.text)
                                 HStack{
                                     if tweet.bestCommentId == nil {
-                                        Button(action: {
-                                            viewModel.setBestComment(tweetId: tweet.id, commentId: comment.id)
-                                        }) {
-                                            Image("フォロー")
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width:50,height:50)
-                                                .padding()
+                                        if authManager.user?.id == tweet.userId {
+                                            Button(action: {
+                                                viewModel.setBestComment(tweetId: tweet.id, commentId: comment.id, userId: comment.userId)
+                                            }) {
+                                                Image("フォロー")
+                                                    .resizable()
+                                                    .scaledToFill()
+                                                    .frame(width:50,height:50)
+                                                    .padding()
+                                            }
+                                            Spacer()
                                         }
-                                        Spacer()
                                     }
                                 }
                                 .padding(.leading)

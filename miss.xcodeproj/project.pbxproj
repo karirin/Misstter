@@ -12,6 +12,7 @@
 		269A9FBF2A6AE4B0003446CC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269A9FBE2A6AE4B0003446CC /* ContentView.swift */; };
 		269A9FC12A6AE4B2003446CC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 269A9FC02A6AE4B2003446CC /* Assets.xcassets */; };
 		269A9FC42A6AE4B2003446CC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 269A9FC32A6AE4B2003446CC /* Preview Assets.xcassets */; };
+		269DE0FA2A754F9400C94FF3 /* TopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269DE0F92A754F9400C94FF3 /* TopView.swift */; };
 		26A6CEBB2A72E17C009AA582 /* SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A6CEAF2A72E17C009AA582 /* SignUp.swift */; };
 		26A6CEBC2A72E17C009AA582 /* LikeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A6CEB02A72E17C009AA582 /* LikeButtonView.swift */; };
 		26A6CEBE2A72E17C009AA582 /* CommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A6CEB22A72E17C009AA582 /* CommentView.swift */; };
@@ -21,6 +22,8 @@
 		26A6CEC32A72E17D009AA582 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 26A6CEB72A72E17C009AA582 /* GoogleService-Info.plist */; };
 		26A6CEC42A72E17D009AA582 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A6CEB82A72E17C009AA582 /* ImagePicker.swift */; };
 		26A6CEC52A72E17D009AA582 /* TweetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A6CEB92A72E17C009AA582 /* TweetViewModel.swift */; };
+		26D856F22A766B5C0061DE21 /* UserDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26D856F12A766B5C0061DE21 /* UserDetailView.swift */; };
+		26D856F42A7689550061DE21 /* RefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26D856F32A7689550061DE21 /* RefreshControl.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +33,8 @@
 		269A9FBE2A6AE4B0003446CC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		269A9FC02A6AE4B2003446CC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		269A9FC32A6AE4B2003446CC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		269DE0F62A7526D800C94FF3 /* miss.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = miss.entitlements; sourceTree = "<group>"; };
+		269DE0F92A754F9400C94FF3 /* TopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopView.swift; sourceTree = "<group>"; };
 		26A6CEAF2A72E17C009AA582 /* SignUp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUp.swift; sourceTree = "<group>"; };
 		26A6CEB02A72E17C009AA582 /* LikeButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LikeButtonView.swift; sourceTree = "<group>"; };
 		26A6CEB22A72E17C009AA582 /* CommentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentView.swift; sourceTree = "<group>"; };
@@ -39,6 +44,8 @@
 		26A6CEB72A72E17C009AA582 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		26A6CEB82A72E17C009AA582 /* ImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		26A6CEB92A72E17C009AA582 /* TweetViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetViewModel.swift; sourceTree = "<group>"; };
+		26D856F12A766B5C0061DE21 /* UserDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailView.swift; sourceTree = "<group>"; };
+		26D856F32A7689550061DE21 /* RefreshControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshControl.swift; sourceTree = "<group>"; };
 		42F396883EF51422FB55EE06 /* Pods_miss.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_miss.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C8C740FFA13C8AAFD8520AA /* Pods-miss.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-miss.release.xcconfig"; path = "Target Support Files/Pods-miss/Pods-miss.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -76,16 +83,20 @@
 		269A9FBB2A6AE4B0003446CC /* miss */ = {
 			isa = PBXGroup;
 			children = (
+				269DE0F62A7526D800C94FF3 /* miss.entitlements */,
 				269A9FBC2A6AE4B0003446CC /* missApp.swift */,
 				269A9FBE2A6AE4B0003446CC /* ContentView.swift */,
+				26D856F32A7689550061DE21 /* RefreshControl.swift */,
+				26D856F12A766B5C0061DE21 /* UserDetailView.swift */,
 				26A6CEB62A72E17C009AA582 /* ActiveViewKey.swift */,
 				26A6CEB52A72E17C009AA582 /* AuthManager.swift */,
+				26A6CEB92A72E17C009AA582 /* TweetViewModel.swift */,
 				26A6CEB22A72E17C009AA582 /* CommentView.swift */,
 				26A6CEB42A72E17C009AA582 /* DetailView.swift */,
 				26A6CEB82A72E17C009AA582 /* ImagePicker.swift */,
 				26A6CEB02A72E17C009AA582 /* LikeButtonView.swift */,
 				26A6CEAF2A72E17C009AA582 /* SignUp.swift */,
-				26A6CEB92A72E17C009AA582 /* TweetViewModel.swift */,
+				269DE0F92A754F9400C94FF3 /* TopView.swift */,
 				26A6CEB72A72E17C009AA582 /* GoogleService-Info.plist */,
 				269A9FC02A6AE4B2003446CC /* Assets.xcassets */,
 				269A9FC22A6AE4B2003446CC /* Preview Content */,
@@ -237,12 +248,15 @@
 				26A6CEBE2A72E17C009AA582 /* CommentView.swift in Sources */,
 				26A6CEC12A72E17C009AA582 /* AuthManager.swift in Sources */,
 				26A6CEC02A72E17C009AA582 /* DetailView.swift in Sources */,
+				26D856F22A766B5C0061DE21 /* UserDetailView.swift in Sources */,
+				26D856F42A7689550061DE21 /* RefreshControl.swift in Sources */,
 				269A9FBF2A6AE4B0003446CC /* ContentView.swift in Sources */,
 				26A6CEBB2A72E17C009AA582 /* SignUp.swift in Sources */,
 				26A6CEC42A72E17D009AA582 /* ImagePicker.swift in Sources */,
 				269A9FBD2A6AE4B0003446CC /* missApp.swift in Sources */,
 				26A6CEC22A72E17C009AA582 /* ActiveViewKey.swift in Sources */,
 				26A6CEBC2A72E17C009AA582 /* LikeButtonView.swift in Sources */,
+				269DE0FA2A754F9400C94FF3 /* TopView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -369,6 +383,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = miss/miss.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"miss/Preview Content\"";
@@ -399,6 +414,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = miss/miss.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"miss/Preview Content\"";

@@ -71,8 +71,40 @@ struct Comment: Identifiable, Hashable {
                         }
                     })
                 }
-
                 
+                func fetchDataByUserId(userId: String) {
+                    db.child("tweets").queryOrdered(byChild: "userId").queryEqual(toValue: userId).observe(.value, with: { [weak self] (snapshot) in
+                        guard let self = self else { return }
+                        
+                        var newTweetLikeViewModels: [TweetLikeViewModel] = []
+                        
+                        for child in snapshot.children.reversed() { // Reverse the order to get newest first
+                            if let childSnapshot = child as? DataSnapshot,
+                               let dict = childSnapshot.value as? [String: Any],
+                               let text = dict["text"] as? String,
+                               let userId = dict["userId"] as? String,
+                               let imageUrl = dict["imageUrl"] as? String,
+                               let createdAtTimestamp = dict["createdAt"] as? TimeInterval {
+                                let likes = dict["likes"] as? [String: Bool] ?? [:] // Handle case where likes does not exist
+                                let isLiked = likes[AuthManager.shared.user?.id ?? ""] ?? false
+                                let createdAt = Date(timeIntervalSince1970: createdAtTimestamp / 1000) // Convert to Date
+                                let bestCommentId = dict["bestCommentId"] as? String
+                                
+                                self.fetchUser(userId: userId) { user in
+                                    guard let user = user else { return }
+                                    let tweet = Tweet(id: childSnapshot.key, text: text, userId: userId, userName: user.name, userIcon: user.icon, imageUrl: imageUrl, isLiked: isLiked, likes: likes, bestCommentId: bestCommentId, createdAt: createdAt)  // 更新
+                                    let tweetLikeViewModel = TweetLikeViewModel(tweet: tweet, parentViewModel: self)
+                                    newTweetLikeViewModels.append(tweetLikeViewModel)
+                                    
+                                    DispatchQueue.main.async {
+                                        self.tweetLikeViewModels = newTweetLikeViewModels
+                                    }
+                                }
+                            }
+                        }
+                    })
+                }
+
                 func fetchUser(userId: String, completion: @escaping (User?) -> Void) {
                     db.child("users").child(userId).observeSingleEvent(of: .value) { snapshot in
                         guard let value = snapshot.value as? [String: Any] else {
@@ -81,10 +113,12 @@ struct Comment: Identifiable, Hashable {
                         }
                         let name = value["name"] as? String ?? ""
                         let icon = value["icon"] as? String ?? ""
-                        let user = User(id: userId, name: name, icon: icon)
+                        let bio = value["bio"] as? String ?? "" // 追加
+                        let user = User(id: userId, name: name, icon: icon, bio: bio) // bioを追加
                         completion(user)
                     }
                 }
+
 
                 func sendTweet(text: String, image: UIImage?) {
                     guard let user = AuthManager.shared.user else { return }
@@ -178,10 +212,19 @@ struct Comment: Identifiable, Hashable {
                     }
                 }
                 
-                func setBestComment(tweetId: String, commentId: String) {
-                    db.child("tweets").child(tweetId).child("bestCommentId").setValue(commentId)
-                }
+                func setBestComment(tweetId: String, commentId: String, userId: String) {
+                    let tweetRef = db.child("tweets").child(tweetId)
+                    tweetRef.child("bestCommentId").setValue(commentId)
+                    tweetRef.child("bestCommentUserId").setValue(userId)
 
+                    let userRef = db.child("users").child(userId)
+                    userRef.child("bestCommentsCount").runTransactionBlock { (currentData: MutableData) -> TransactionResult in
+                        var bestCommentsCount = currentData.value as? Int ?? 0
+                        bestCommentsCount += 1
+                        currentData.value = bestCommentsCount
+                        return TransactionResult.success(withValue: currentData)
+                    }
+                }
             }
 
         class TweetLikeViewModel: ObservableObject {

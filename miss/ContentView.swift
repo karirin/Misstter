@@ -10,53 +10,30 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject private var viewModel = TweetViewModel()
     @State var showAnotherView_post: Bool = false
-    @State private var inputText: String = ""
+    @State private var inputText: String = "test"
     @State private var selectedImage: UIImage?
     var tweet: Tweet
     @Environment(\.activeView) var activeView
     @State private var isImagePickerDisplayed = false
-    
-    struct RefreshControl: View {
-        
-        @State private var isRefreshing = false
-        var coordinateSpaceName: String
-        var onRefresh: () -> Void
-        
-        var body: some View {
-            GeometryReader { geometry in
-                if geometry.frame(in: .named(coordinateSpaceName)).midY > 50 {
-                    Spacer()
-                        .onAppear() {
-                            isRefreshing = true
-                        }
-                } else if geometry.frame(in: .named(coordinateSpaceName)).maxY < 10 {
-                    Spacer()
-                        .onAppear() {
-                            if isRefreshing {
-                                isRefreshing = false
-                                onRefresh()
-                            }
-                        }
-                }
-                HStack {
-                    Spacer()
-                    if isRefreshing {
-                        ProgressView()
-                    } else {
-                        Text("⬇︎")
-                            .font(.system(size: 28))
-                    }
-                    Spacer()
-                }
-            }.padding(.top, -50)
-        }
-    }
+    @ObservedObject private var authManager = AuthManager.shared
 
     var body: some View {
         NavigationView {
             VStack{
                 HStack{
-                    Text("")
+                    if let user = authManager.user {
+                        NavigationLink(destination: UserDetailView(userId: user.id)) {
+                            if let userIconURL = URL(string: authManager.user?.icon ?? "") {
+                                AsyncImage(url: userIconURL) { image in // 非同期で画像をロード
+                                    image.resizable()
+                                } placeholder: {
+                                    ProgressView() // プレースホルダー
+                                }
+                                .frame(width: 40, height: 40) // サイズを設定
+                                .clipShape(Circle()) // 円形にクリップ
+                            }
+                        }
+                    }
                     Spacer()
                     Text("     ")
                         .fontWeight(.bold)
@@ -77,11 +54,12 @@ struct ContentView: View {
                             NavigationLink(destination: DetailView(tweetLikeViewModel: tweetLikeViewModel, viewModel: viewModel, tweet: tweetLikeViewModel.tweet)) {
                                 HStack{
                                     VStack{
-                                        CachedImage(url: URL(string: tweetLikeViewModel.tweet.userIcon) ?? URL(string: "https://default.com")!)
-                                            .frame(width:60,height:60)
-                                            .cornerRadius(75)
-                                            .padding(.bottom)
-                                        Spacer()
+                                        NavigationLink(destination: UserDetailView(userId: tweetLikeViewModel.tweet.userId)) {
+                                            CachedImage(url: URL(string: tweetLikeViewModel.tweet.userIcon) ?? URL(string: "https://default.com")!)
+                                                .frame(width:60,height:60)
+                                                .cornerRadius(75)
+                                                .padding(.bottom)
+                                        }
                                     }
                                     VStack{
                                         VStack (alignment: .leading){

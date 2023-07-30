@@ -14,7 +14,9 @@ struct User: Identifiable {
     let id: String
     let name: String
     let icon: String
+    let bio: String // 追加
 }
+
 
 class AuthManager: ObservableObject {
     @Published var user: User?
@@ -28,16 +30,15 @@ class AuthManager: ObservableObject {
 
     func fetchUser() {
         guard let firebaseUser = Auth.auth().currentUser else { return }
-        print("firebaseUser:\(firebaseUser)")
         db.child("users").child(firebaseUser.uid).observeSingleEvent(of: .value) { snapshot in
             guard let value = snapshot.value as? [String: Any] else { return }
-            print("value:\(value)")
             let name = value["name"] as? String ?? ""
             let icon = value["icon"] as? String ?? ""
-            self.user = User(id: firebaseUser.uid, name: name, icon: icon)
-            print("self.user:\(self.user)")
+            let bio = value["bio"] as? String ?? "" // 追加
+            self.user = User(id: firebaseUser.uid, name: name, icon: icon, bio: bio) // 変更
         }
     }
+
 
     func anonymousSignIn() {
         Auth.auth().signInAnonymously { result, error in
@@ -50,38 +51,36 @@ class AuthManager: ObservableObject {
         }
     }
     
-    func createUser(name: String, icon: UIImage?) {
-        guard let firebaseUser = Auth.auth().currentUser else { print("user")
-            return }
-        guard let image = icon, let imageData = image.jpegData(compressionQuality: 0.8) else { return }
-        
-        let storageRef = Storage.storage().reference().child("\(firebaseUser.uid).jpg")
-        let metadata = StorageMetadata()
-        metadata.contentType = "image/jpeg"
-        
-        storageRef.putData(imageData, metadata: metadata) { _, error in
-            if let error = error {
-                print("Errorあ: \(error.localizedDescription)")
-            } else {
-                storageRef.downloadURL { url, error in
-                    if let error = error {
-                        print("Error: \(error.localizedDescription)")
-                    } else if let url = url {
-                        let user = ["name": name, "icon": url.absoluteString]
-                        self.db.child("users").child(firebaseUser.uid).setValue(user) { error, _ in
-                            if let error = error {
-                                print("Error: \(error.localizedDescription)")
-                            } else {
-                                self.fetchUser()
+    func createUser(name: String, icon: UIImage?, bio: String) { // bioを追加
+            guard let firebaseUser = Auth.auth().currentUser else { print("user")
+                return }
+            guard let image = icon, let imageData = image.jpegData(compressionQuality: 0.8) else { return }
+            
+            let storageRef = Storage.storage().reference().child("\(firebaseUser.uid).jpg")
+            let metadata = StorageMetadata()
+            metadata.contentType = "image/jpeg"
+            
+            storageRef.putData(imageData, metadata: metadata) { _, error in
+                if let error = error {
+                    print("Errorあ: \(error.localizedDescription)")
+                } else {
+                    storageRef.downloadURL { url, error in
+                        if let error = error {
+                            print("Error: \(error.localizedDescription)")
+                        } else if let url = url {
+                            let user = ["name": name, "icon": url.absoluteString, "bio": bio] // bioを追加
+                            self.db.child("users").child(firebaseUser.uid).setValue(user) { error, _ in
+                                if let error = error {
+                                    print("Error: \(error.localizedDescription)")
+                                } else {
+                                    self.fetchUser()
+                                }
                             }
                         }
                     }
                 }
             }
         }
-    }
-
-
 }
 
 struct AuthManager1: View {
