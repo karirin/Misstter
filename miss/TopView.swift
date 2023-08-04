@@ -11,7 +11,7 @@ struct TopView: View {
     @ObservedObject private var authManager = AuthManager.shared
     @State private var selectedTab = 0
     var body: some View {
-        TabView(selection: $selectedTab) {
+      TabView(selection: $selectedTab) {
             let tweet = Tweet(id: "dummyID", text: "dummyUser", userId: "dummyText", userName: "dummyIconURL", userIcon: "dummyIconURL", imageUrl: "https://default.com", isLiked: false, createdAt: Date())
             ContentView(tweet: tweet)
                 .tag(0)
@@ -19,6 +19,16 @@ struct TopView: View {
                     Image(systemName: "house")
                     Text("ホーム")
                 }
+          let viewModel = NotificationViewModel()
+          let tweetViewModel = TweetViewModel()
+          
+          // 作成または取得したインスタンスを NotificationView に渡します。
+          NotificationView(viewModel: viewModel, tweetViewModel: tweetViewModel)
+              .tag(1)
+              .tabItem {
+                  Image(systemName: "house")
+                  Text("ホーム")
+              }
         }
     }
 }

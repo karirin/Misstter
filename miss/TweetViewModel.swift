@@ -153,6 +153,7 @@ struct Comment: Identifiable, Hashable {
                         }
                         db.child("tweets").child(tweetLikeViewModels[index].tweet.id).child("likes").setValue(tweetLikeViewModels[index].tweet.likes)
                     }
+                    sendNotification(to: tweet.userId, tweetId: tweet.id)
                 }
                 
                 func sendComment(tweetId: String, text: String) {
@@ -225,6 +226,20 @@ struct Comment: Identifiable, Hashable {
                         return TransactionResult.success(withValue: currentData)
                     }
                 }
+                
+                func sendNotification(to receiverId: String, tweetId: String) {
+                    guard let senderId = AuthManager.shared.user?.id else { return }
+                    let key = db.child("notifications").childByAutoId().key ?? ""
+                    let notification = ["senderId": senderId, "receiverId": receiverId, "tweetId": tweetId, "createdAt": ServerValue.timestamp()] as [String: Any]
+                    print("notification:\(notification)")
+                    db.child("notifications").child(key).setValue(notification) { (error, ref) in
+                        if let error = error {
+                            print("Failed to set value:", error)
+                        }
+                    }
+
+                }
+
             }
 
         class TweetLikeViewModel: ObservableObject {

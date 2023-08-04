@@ -10,7 +10,7 @@ import SwiftUI
 struct SignUp: View {
     @ObservedObject private var viewModel = TweetViewModel()
     @ObservedObject private var authManager = AuthManager.shared
-    @State private var userName: String = "テストユーザー"
+    @State private var userName: String = "りょうや"
     @State private var showImagePicker: Bool = false
 
     var body: some View {
@@ -87,6 +87,7 @@ struct ImagePickerView: View {
     @State private var isImagePickerDisplay = false
     @ObservedObject private var authManager = AuthManager.shared
     @State private var showProfileCreation: Bool = false // 追加
+    let defaultImage = UIImage(named: "defaultProfileImage")
 
     var body: some View {
         VStack {
@@ -148,17 +149,38 @@ struct ImagePickerView: View {
 
 struct ProfileCreationView: View {
     @Binding var userName: String
-    @State private var bio: String = "テスト"
+    @State private var bio: String = "あああああああああああああああああああああああああああああああああああああああああああああああああああ"
     @ObservedObject private var authManager = AuthManager.shared // 追加
     @Binding var userIcon: UIImage? // 追加
+    let defaultImage = UIImage(named: "defaultProfileImage")
 
     var body: some View {
         VStack {
-            TextField("自己紹介", text: $bio)
+            HStack{
+                Text("自己紹介文を入力してください")
+                    .font(.system(size: 26))
+                    .fontWeight(.bold)
+            }
+            Text("必須入力では無いです")
+                .font(.system(size: 18))
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
+                .padding(.top,5)
+            TextField("自己紹介", text: $bio,axis: .vertical)
+                .frame(maxWidth: .infinity,maxHeight:100, alignment: .top)
                 .padding()
             Button("ユーザーを作成") {
-                authManager.createUser(name: userName, icon: userIcon, bio: bio) // 変更
+                let selectedIcon = userIcon ?? defaultImage
+                authManager.createUser(name: userName, icon: selectedIcon, bio: bio) // 変更
             }
+            .padding(.vertical,10)
+            .padding(.horizontal,25)
+            .font(.headline)
+            .foregroundColor(.white)
+            .background(RoundedRectangle(cornerRadius: 25)
+                .fill(Color("green")))
             .padding()
         }
     }
@@ -166,10 +188,12 @@ struct ProfileCreationView: View {
 
 
 struct SignUp_Previews: PreviewProvider {
-    @State static var userName: String = "テストユーザー" // ここでダミーのユーザー名を設定
+    @State static var userName: String = "りょうや" // ここでダミーのユーザー名を設定
+    @State static var defaultImage = UIImage(named: "defaultProfileImage")
 
     static var previews: some View {
          SignUp()
-        //ImagePickerView(userName: $userName) // ダミーのユーザー名を渡す
+//        ImagePickerView(userName: $userName) // ダミーのユーザー名を渡す
+//        ProfileCreationView(userName: $userName, userIcon: $defaultImage)
     }
 }

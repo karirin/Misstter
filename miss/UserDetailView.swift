@@ -14,12 +14,42 @@ struct UserDetailView: View {
     @State var user: User? // ユーザー情報
     var db = Database.database().reference() // Firebaseのデータベースへの参照
     @ObservedObject private var viewModel = TweetViewModel()
+    @Environment(\.presentationMode) var presentationMode
+    @State private var showCommentView: Bool = false
     
     var body: some View {
         // ユーザー情報の表示
         VStack{
             HStack{
-                VStack (alignment: .leading){
+                Button(action: {
+                    // 戻るアクションを記述
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    // 戻るボタンのデザイン
+                    Image(systemName: "arrow.left") // システムアイコンを使用
+                        .foregroundColor(.black) // 色を設定
+                }
+                .padding(.leading)
+                Spacer()
+                Image("miss")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width:180,height:20)
+                Spacer()
+                Button(action: {
+                    // 戻るアクションを記述
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    // 戻るボタンのデザイン
+                    Image(systemName: "arrow.left") // システムアイコンを使用
+                        .foregroundColor(.black) // 色を設定
+                }
+                .padding(.leading)
+                .opacity(0)
+            }
+            .padding(.top)
+            HStack{
+                VStack(alignment: .leading){
                     if let user = user {
                         if let userIconURL = URL(string: user.icon ?? "") {
                             AsyncImage(url: userIconURL) { image in // 非同期で画像をロード
@@ -30,10 +60,14 @@ struct UserDetailView: View {
                             .frame(width: 80, height: 80) // サイズを設定
                             .clipShape(Circle()) // 円形にクリップ
                         }
-                        Text(" \(user.name)")
-                            .font(.system(size: 24))
-                            .fontWeight(.bold)
-                        Text(" \(user.bio)")
+                        VStack(alignment: .leading){
+                            Text(" \(user.name)")
+                                .font(.system(size: 24))
+                                .fontWeight(.bold)
+                            Text(" \(user.bio)")
+                                .multilineTextAlignment(.leading)
+                                .frame(maxWidth:.infinity, alignment: .leading)
+                        }
                         // 他の詳細情報も表示
                     } else {
                         Text("ユーザー情報をロード中...")
@@ -49,7 +83,7 @@ struct UserDetailView: View {
                     })
                     VStack {
                         ForEach(viewModel.tweetLikeViewModels, id: \.tweet.id) { tweetLikeViewModel in
-                            NavigationLink(destination: DetailView(tweetLikeViewModel: tweetLikeViewModel, viewModel: viewModel, tweet: tweetLikeViewModel.tweet)) {
+                            NavigationLink(destination: DetailView(tweetLikeViewModel: tweetLikeViewModel, viewModel: viewModel, tweet: tweetLikeViewModel.tweet, tweetId: tweetLikeViewModel.tweet.id)) {
                                 HStack{
                                     VStack{
                                         CachedImage(url: URL(string: tweetLikeViewModel.tweet.userIcon) ?? URL(string: "https://default.com")!)
@@ -70,6 +104,8 @@ struct UserDetailView: View {
                                                             .foregroundColor(.gray)
                                                     }
                                                     Text(tweetLikeViewModel.tweet.text)
+                                                        .multilineTextAlignment(.leading)
+                                                        .frame(maxWidth:.infinity, alignment: .leading)
                                                 }
                                                 Spacer()
                                             }
@@ -116,6 +152,7 @@ struct UserDetailView: View {
             Spacer()
         }
         .onAppear(perform: fetchUserData) // 画面表示時にユーザー情報を取得
+        .navigationBarBackButtonHidden(true) // Hide the back button
     }
     
     // 指定されたuserIDに対応するユーザー情報を取得
@@ -168,6 +205,6 @@ struct UserDetailView: View {
 }
 struct UserDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        UserDetailView(userId: "p7HIhWldBHdbPYacmqLISnHBShF2") // userIdパラメータを渡す
+        UserDetailView(userId: "uPWbwYtXyHZ6H7BKstnSU0yYfU52") // userIdパラメータを渡す
     }
 }

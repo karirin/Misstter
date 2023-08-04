@@ -16,17 +16,39 @@ struct DetailView: View {
     @State private var showingCommentView = false
     @Environment(\.activeView) var activeView
     @ObservedObject var authManager = AuthManager.shared
+    var tweetId: String
 
     
     let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
         formatter.locale = Locale(identifier: "ja_JP")
-        print("formatter:\(formatter)")
         return formatter
     }()
 
     var body: some View {
+        HStack{
+            Button(action: {
+                        self.presentationMode.wrappedValue.dismiss()
+                    }) {
+                        HStack {
+                            Image(systemName: "arrow.backward")
+                        }
+                    }
+                    .padding(.leading)
+            Spacer()
+            Text("詳細")
+            Spacer()
+            
+            Button(action: {
+                        self.presentationMode.wrappedValue.dismiss()
+                    }) {
+                        HStack {
+                            Image(systemName: "arrow.backward")
+                        }
+                    }
+                    .opacity(0)
+        }
         ScrollView {
             VStack {
                 HStack{
@@ -124,12 +146,12 @@ struct DetailView: View {
                                 Spacer()
                             }
                             Spacer()
-                            if tweet.bestCommentId == comment.id {
-                                Image("フォロー")
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width:80,height:80)
-                            }
+                                if tweet.bestCommentId == comment.id {
+                                    Image("フォロー")
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width:80,height:80)
+                                }
                         }
                         .padding(5)
                         Spacer()
@@ -143,30 +165,11 @@ struct DetailView: View {
                 viewModel.fetchComments(tweetId: tweet.id) { fetchedComments in
                     self.comments = fetchedComments
                 }
-                activeView.wrappedValue = "DetailView"
             }
-            .onDisappear() {
-                activeView.wrappedValue = ""
-            }
-            .navigationTitle("詳細")
             .navigationBarBackButtonHidden(true)
-            .navigationBarItems(leading: Button(action: {
-                // 戻るボタンのアクションをここに書きます
-                self.presentationMode.wrappedValue.dismiss()
-            }) {
-                HStack {
-                    Image(systemName: "arrow.backward")
-                }
-                .foregroundColor(.black)
-            })
-            .onAppear {
-                viewModel.fetchComments(tweetId: tweet.id) { fetchedComments in
-                    self.comments = fetchedComments
-                }
-            }
             .fullScreenCover(isPresented: $showingCommentView) {
                 NavigationView {
-                    CommentView(tweetLikeViewModel: tweetLikeViewModel)
+                    CommentView(tweetLikeViewModel: tweetLikeViewModel, showingCommentView: $showingCommentView)
                 }
             }
         }

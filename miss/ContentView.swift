@@ -16,6 +16,8 @@ struct ContentView: View {
     @Environment(\.activeView) var activeView
     @State private var isImagePickerDisplayed = false
     @ObservedObject private var authManager = AuthManager.shared
+    @State private var showNotificationView: Bool = false
+    @ObservedObject private var notificationViewModel = NotificationViewModel() // ここでViewModelを監視
 
     var body: some View {
         NavigationView {
@@ -31,27 +33,39 @@ struct ContentView: View {
                                 }
                                 .frame(width: 40, height: 40) // サイズを設定
                                 .clipShape(Circle()) // 円形にクリップ
+                                
+                                .padding(.leading)
                             }
                         }
                     }
                     Spacer()
-                    Text("     ")
-                        .fontWeight(.bold)
+                    Image("miss")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width:180,height:20)
                     Spacer()
-                    Text("")
+                    
+                    Button(action: {
+                        self.showNotificationView = true
+                    }, label: {
+                        Image(systemName: notificationViewModel.hasNewNotifications ? "bell.badge" : "bell") // ここでアイコンを切り替え
+                            .foregroundColor(.black)
+                    })
+                    .font(.system(size: 28))
+                    .padding(.trailing)
                 }
-                .padding()
-                .background(Color("green"))
-                .foregroundColor(.white)
-                .frame(height:50)
-                .font(.system(size: 20))
+                
+                NavigationLink(destination: NotificationView(viewModel: NotificationViewModel(), tweetViewModel: viewModel), isActive: $showNotificationView) {
+                    EmptyView()
+                }
+                
                 ScrollView {
                     RefreshControl(coordinateSpaceName: "RefreshControl", onRefresh: {
                         print("doRefresh()")
                     })
                     VStack {
                         ForEach(viewModel.tweetLikeViewModels, id: \.tweet.id) { tweetLikeViewModel in
-                            NavigationLink(destination: DetailView(tweetLikeViewModel: tweetLikeViewModel, viewModel: viewModel, tweet: tweetLikeViewModel.tweet)) {
+                            NavigationLink(destination: DetailView(tweetLikeViewModel: tweetLikeViewModel, viewModel: viewModel, tweet: tweetLikeViewModel.tweet, tweetId: tweetLikeViewModel.tweet.id)) {
                                 HStack{
                                     VStack{
                                         NavigationLink(destination: UserDetailView(userId: tweetLikeViewModel.tweet.userId)) {
@@ -62,20 +76,26 @@ struct ContentView: View {
                                         }
                                     }
                                     VStack{
-                                        VStack (alignment: .leading){
+                                        VStack{
                                             HStack{
                                                 VStack(alignment: .leading){
                                                     HStack{
                                                         Text(tweetLikeViewModel.tweet.userName)
-                                                            .fontWeight(.bold)
-                                                        Text(timeAgoSinceDate(tweetLikeViewModel.tweet.createdAt))
-                                                                                                                .font(.footnote)
-                                                                                                                .foregroundColor(.gray)
+                                                  .fontWeight(.bold)
+                                                Text(timeAgoSinceDate(tweetLikeViewModel.tweet.createdAt))
+                                                  .font(.footnote)
+                                                  .foregroundColor(.gray)
                                                     }
-                                                    Text(tweetLikeViewModel.tweet.text)
+                                                    HStack{
+                                                        Text(tweetLikeViewModel.tweet.text)
+                                                            .multilineTextAlignment(.leading)
+                                                            .frame(maxWidth:.infinity, alignment: .leading)
+                                                    }
                                                 }
+                                                .frame(maxWidth:.infinity)
                                                 Spacer()
                                             }
+                                            .frame(maxWidth:.infinity)
                                             if let imageUrl = URL(string: tweetLikeViewModel.tweet.imageUrl ?? "") {
                                                 AsyncImage(url: imageUrl) { image in
                                                     image.resizable()
@@ -88,12 +108,15 @@ struct ContentView: View {
                                             }
                                         }
                                         .padding(.top,5)
+                                        .frame(maxWidth:.infinity)
                                         HStack{
                                             LikeButtonView(viewModel: LikeButtonViewModel(isLiked: tweetLikeViewModel.tweet.isLiked, likesCount: tweetLikeViewModel.tweet.likes.count, toggleLike: tweetLikeViewModel.toggleLike))
                                             Spacer()
                                         }
                                         .padding(.bottom)
+                                        .frame(maxWidth:.infinity)
                                     }
+                                    .frame(maxWidth:.infinity)
                                 Spacer()
                                 }
                             }
@@ -140,8 +163,8 @@ struct ContentView: View {
                                         .fullScreenCover(isPresented: $showAnotherView_post, content: {
                                             NavigationView {
                                                 VStack {
-                                                    TextField("口頭で頼まれていたことを忘れてしまった…", text: $inputText)
-                                                        .frame(maxWidth: .infinity)
+                                                    TextField("口頭で頼まれていたことを忘れてしまった…", text: $inputText,axis: .vertical)
+                                                        .frame(maxWidth: .infinity,maxHeight:100, alignment: .top)
                                                         .border(Color.clear, width: 0)
                                                     HStack{
                                                         Button(action: {
