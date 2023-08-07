@@ -22,10 +22,14 @@ class AuthManager: ObservableObject {
     @Published var user: User?
     private var db = Database.database().reference()
     static let shared = AuthManager()
+    @Published var isLoading = true  // 追加
 
     init() {
         anonymousSignIn()
         fetchUser()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            self.isLoading = false
+        }
     }
 
     func fetchUser() {

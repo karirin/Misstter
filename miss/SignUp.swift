@@ -10,7 +10,7 @@ import SwiftUI
 struct SignUp: View {
     @ObservedObject private var viewModel = TweetViewModel()
     @ObservedObject private var authManager = AuthManager.shared
-    @State private var userName: String = "りょうや"
+    @State private var userName: String = "りょうや2"
     @State private var showImagePicker: Bool = false
 
     var body: some View {
@@ -21,7 +21,7 @@ struct SignUp: View {
                             .font(.system(size: 30))
                             .fontWeight(.bold)
                     }
-                Text("名前はいつでも変更できます")
+                Text("20文字以下で入力してください")
                             .font(.system(size: 18))
                             .font(.caption)
                             .foregroundColor(.secondary)

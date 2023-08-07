@@ -39,6 +39,7 @@ struct RefreshControl: View {
                    }
                    Spacer()
                }
-           }.padding(.top, -50)
+           }
+           .padding(.top, -40)
        }
    }

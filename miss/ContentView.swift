@@ -6,11 +6,27 @@
 //
 
 import SwiftUI
+import GoogleMobileAds
+
+struct AdMobBannerView: UIViewRepresentable {
+    func makeUIView(context: Context) -> GADBannerView {
+        let banner = GADBannerView(adSize: GADAdSizeBanner) // インスタンスを生成
+        // 諸々の設定をしていく
+        banner.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        banner.rootViewController = UIApplication.shared.windows.first?.rootViewController
+        banner.load(GADRequest())
+        return banner // 最終的にインスタンスを返す
+    }
+
+    func updateUIView(_ uiView: GADBannerView, context: Context) {
+      // 特にないのでメソッドだけ用意
+    }
+}
 
 struct ContentView: View {
     @ObservedObject private var viewModel = TweetViewModel()
     @State var showAnotherView_post: Bool = false
-    @State private var inputText: String = "test"
+    @State private var inputText: String = "あああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ"
     @State private var selectedImage: UIImage?
     var tweet: Tweet
     @Environment(\.activeView) var activeView
@@ -33,8 +49,13 @@ struct ContentView: View {
                                 }
                                 .frame(width: 40, height: 40) // サイズを設定
                                 .clipShape(Circle()) // 円形にクリップ
-                                
                                 .padding(.leading)
+                            } else {
+                                Image(systemName: "person.fill")
+                                    .resizable()
+                                    .frame(width: 40, height: 40)
+                                    .clipShape(Circle())
+                                    .padding(.leading)
                             }
                         }
                     }
@@ -43,22 +64,38 @@ struct ContentView: View {
                         .resizable()
                         .scaledToFill()
                         .frame(width:180,height:20)
+                        .padding(.top,5)
                     Spacer()
                     
                     Button(action: {
                         self.showNotificationView = true
+                        self.notificationViewModel.checkNotifications()
                     }, label: {
-                        Image(systemName: notificationViewModel.hasNewNotifications ? "bell.badge" : "bell") // ここでアイコンを切り替え
-                            .foregroundColor(.black)
+                        ZStack {
+                            Image(systemName: notificationViewModel.hasNewNotifications && !notificationViewModel.isNotificationChecked ? "bell" : "bell")
+                                .foregroundColor(.black)
+                            if notificationViewModel.hasNewNotifications && !notificationViewModel.isNotificationChecked {
+                                Image(systemName: "circle.fill")
+                                    .resizable()
+                                    .frame(width: 10, height: 10)
+                                    .foregroundColor(.red)
+                                    .offset(x: 10, y: -10)
+                            }
+                        }
                     })
                     .font(.system(size: 28))
                     .padding(.trailing)
+
                 }
+                .padding(.top)
                 
                 NavigationLink(destination: NotificationView(viewModel: NotificationViewModel(), tweetViewModel: viewModel), isActive: $showNotificationView) {
                     EmptyView()
                 }
-                
+                AdMobBannerView()
+                    .frame(height:40)
+                    .padding(.bottom,-10)
+                    .padding(.top)
                 ScrollView {
                     RefreshControl(coordinateSpaceName: "RefreshControl", onRefresh: {
                         print("doRefresh()")
@@ -74,6 +111,8 @@ struct ContentView: View {
                                                 .cornerRadius(75)
                                                 .padding(.bottom)
                                         }
+                                        .padding(.top)
+                                        Spacer()
                                     }
                                     VStack{
                                         VStack{
@@ -137,9 +176,11 @@ struct ContentView: View {
                     }
                 }
             }
-            .onAppear() {
-                self.viewModel.fetchData()
-            }
+
+        }
+        .onAppear() {
+            self.viewModel.fetchData() // 既存のデータ取得
+            self.notificationViewModel.fetchNotifications() // 通知の取得
         }
             .overlay(
                 ZStack {
@@ -164,22 +205,22 @@ struct ContentView: View {
                                             NavigationView {
                                                 VStack {
                                                     TextField("口頭で頼まれていたことを忘れてしまった…", text: $inputText,axis: .vertical)
-                                                        .frame(maxWidth: .infinity,maxHeight:100, alignment: .top)
+                                                        .frame(maxWidth: .infinity,maxHeight:.infinity, alignment: .top)
                                                         .border(Color.clear, width: 0)
-                                                    HStack{
-                                                        Button(action: {
-                                                            self.isImagePickerDisplayed = true
-                                                        }, label: {
-                                                            Image(systemName: "photo")
-                                                        })
-                                                        .sheet(isPresented: $isImagePickerDisplayed, content: {
-                                                            ImagePicker(image: $selectedImage)
-                                                        })
-                                                        .foregroundColor(.black)
-                                                        .padding(.vertical)
-                                                        
-                                                        Spacer()
-                                                    }
+//                                                    HStack{
+//                                                        Button(action: {
+//                                                            self.isImagePickerDisplayed = true
+//                                                        }, label: {
+//                                                            Image(systemName: "photo")
+//                                                        })
+//                                                        .sheet(isPresented: $isImagePickerDisplayed, content: {
+//                                                            ImagePicker(image: $selectedImage)
+//                                                        })
+//                                                        .foregroundColor(.black)
+//                                                        .padding(.vertical)
+//
+//                                                        Spacer()
+//                                                    }
                                                     if let image = selectedImage {
                                                         ZStack(alignment: .topTrailing) {
                                                             Image(uiImage: image)
@@ -217,8 +258,9 @@ struct ContentView: View {
                                                             selectedImage = nil // Reset selected image
                                                             self.showAnotherView_post = false
                                                         }
+                                                        .frame(width:80)
                                                         .padding(.vertical,5)
-                                                        .padding(.horizontal,25)
+                                                        .padding(.trailing,5)
                                                         .font(.headline)
                                                         .foregroundColor(.white)
                                                         .background(Color("green"))

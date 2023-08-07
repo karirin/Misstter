@@ -38,8 +38,9 @@ struct NotificationRow: View {
                             .multilineTextAlignment(.leading)
                         Text(notification.tweetContent)
                             .foregroundColor(.secondary)
-                            .font(.system(size: 20))
+                            .font(.system(size: 18))
                             .frame(maxWidth: .infinity,alignment: .leading)
+                            .multilineTextAlignment(.leading)
                         Divider()
                     }
                     .padding(.leading)
@@ -81,8 +82,10 @@ struct NotificationView: View {
                         Image(systemName: "arrow.backward")
                     }
                 }
+                .padding(.trailing)
                 .opacity(0)
             }
+            .padding(.top)
             NavigationView {
                 ScrollView {
                     VStack {

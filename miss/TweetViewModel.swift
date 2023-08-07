@@ -65,6 +65,7 @@ struct Comment: Identifiable, Hashable {
                                     
                                     DispatchQueue.main.async {
                                         self.tweetLikeViewModels = newTweetLikeViewModels
+                                        //print("self.tweetLikeViewModels:\(self.tweetLikeViewModels)")
                                     }
                                 }
                             }

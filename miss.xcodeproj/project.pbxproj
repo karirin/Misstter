@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1E31FB43E4B02172CEA198D6 /* Pods_miss.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42F396883EF51422FB55EE06 /* Pods_miss.framework */; };
+		260560062A7F4C0400F64506 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260560052A7F4C0400F64506 /* LoadingView.swift */; };
 		269A9FBD2A6AE4B0003446CC /* missApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269A9FBC2A6AE4B0003446CC /* missApp.swift */; };
 		269A9FBF2A6AE4B0003446CC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269A9FBE2A6AE4B0003446CC /* ContentView.swift */; };
 		269A9FC12A6AE4B2003446CC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 269A9FC02A6AE4B2003446CC /* Assets.xcassets */; };
@@ -30,6 +31,8 @@
 
 /* Begin PBXFileReference section */
 		241846FAD38296B2B71BFD11 /* Pods-miss.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-miss.debug.xcconfig"; path = "Target Support Files/Pods-miss/Pods-miss.debug.xcconfig"; sourceTree = "<group>"; };
+		260560052A7F4C0400F64506 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		260560072A7FD93200F64506 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		269A9FB92A6AE4B0003446CC /* miss.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = miss.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		269A9FBC2A6AE4B0003446CC /* missApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = missApp.swift; sourceTree = "<group>"; };
 		269A9FBE2A6AE4B0003446CC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -87,8 +90,10 @@
 		269A9FBB2A6AE4B0003446CC /* miss */ = {
 			isa = PBXGroup;
 			children = (
+				260560072A7FD93200F64506 /* Info.plist */,
 				269DE0F62A7526D800C94FF3 /* miss.entitlements */,
 				269A9FBC2A6AE4B0003446CC /* missApp.swift */,
+				260560052A7F4C0400F64506 /* LoadingView.swift */,
 				269A9FBE2A6AE4B0003446CC /* ContentView.swift */,
 				26D856F32A7689550061DE21 /* RefreshControl.swift */,
 				26D856F12A766B5C0061DE21 /* UserDetailView.swift */,
@@ -255,6 +260,7 @@
 				26A6CEC12A72E17C009AA582 /* AuthManager.swift in Sources */,
 				26D856F62A793F570061DE21 /* NotificationViewModel.swift in Sources */,
 				26A6CEC02A72E17C009AA582 /* DetailView.swift in Sources */,
+				260560062A7F4C0400F64506 /* LoadingView.swift in Sources */,
 				26D856F22A766B5C0061DE21 /* UserDetailView.swift in Sources */,
 				26D856F42A7689550061DE21 /* RefreshControl.swift in Sources */,
 				269A9FBF2A6AE4B0003446CC /* ContentView.swift in Sources */,
@@ -398,6 +404,7 @@
 				DEVELOPMENT_TEAM = F3XS565TSX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = miss/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -429,6 +436,7 @@
 				DEVELOPMENT_TEAM = F3XS565TSX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = miss/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

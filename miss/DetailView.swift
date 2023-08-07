@@ -47,8 +47,10 @@ struct DetailView: View {
                             Image(systemName: "arrow.backward")
                         }
                     }
+                    .padding(.trailing)
                     .opacity(0)
         }
+        .padding(.top)
         ScrollView {
             VStack {
                 HStack{
@@ -113,12 +115,14 @@ struct DetailView: View {
                                 CachedImage(url: URL(string: comment.userIcon) ?? URL(string: "https://default.com")!)
                                     .frame(width: 60, height: 60)
                                     .cornerRadius(75)
+                                    .padding(.trailing,5)
                                 Spacer()
                             }
                             VStack(alignment: .leading) {
                                 HStack{
                                     Text(comment.userName)
                                         .fontWeight(.bold)
+                                        
                                     Text(timeAgoSinceDate(comment.createdAt)) // ここでコメントの作成時間を表示します
                                                         .font(.footnote)
                                                         .foregroundColor(.gray)
@@ -132,17 +136,15 @@ struct DetailView: View {
                                             Button(action: {
                                                 viewModel.setBestComment(tweetId: tweet.id, commentId: comment.id, userId: comment.userId)
                                             }) {
-                                                Image("フォロー")
+                                                Image("ナイスフォロー")
                                                     .resizable()
                                                     .scaledToFill()
                                                     .frame(width:50,height:50)
-                                                    .padding()
                                             }
-                                            Spacer()
                                         }
                                     }
+                                    Spacer()
                                 }
-                                .padding(.leading)
                                 Spacer()
                             }
                             Spacer()
@@ -169,7 +171,7 @@ struct DetailView: View {
             .navigationBarBackButtonHidden(true)
             .fullScreenCover(isPresented: $showingCommentView) {
                 NavigationView {
-                    CommentView(tweetLikeViewModel: tweetLikeViewModel, showingCommentView: $showingCommentView)
+                    CommentView(tweetLikeViewModel: tweetLikeViewModel)
                 }
             }
         }

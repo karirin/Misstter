@@ -28,9 +28,14 @@ class NotificationViewModel: ObservableObject {
     @Published var notifications = [Notifications]()
     private var db = Database.database().reference()
     @Published var hasNewNotifications = false
+    @Published var isNotificationChecked = false // このプロパティを追加
+    
+    func checkNotifications() {
+        self.isNotificationChecked = true
+    }
 
     func fetchNotifications() {
-        guard let userId = AuthManager.shared.user?.id else { print("test1"); return }
+        guard let userId = AuthManager.shared.user?.id else { print("AUTH"); return }
         db.child("notifications").queryOrdered(byChild: "receiverId").queryEqual(toValue: userId).observe(.value, with: { [weak self] (snapshot: DataSnapshot) in
             print("test")
             var notificationsDict: [String: Notifications] = [:]
@@ -60,6 +65,8 @@ class NotificationViewModel: ObservableObject {
                                         DispatchQueue.main.async {
                                             self?.notifications = Array(notificationsDict.values)
                                             print("All notifications1: \(self?.notifications ?? [])")
+                                            self?.hasNewNotifications = !(self?.notifications.isEmpty ?? true)
+                                            print("self?.hasNewNotifications:\(self?.hasNewNotifications)")
                                         }
                                     }
                                 })
@@ -67,14 +74,6 @@ class NotificationViewModel: ObservableObject {
                         }
                     })
                 }
-            }
-            DispatchQueue.main.async {
-                if let notifications = self?.notifications {
-                    self?.hasNewNotifications = !notifications.isEmpty
-                } else {
-                    self?.hasNewNotifications = false
-                }
-                self?.notifications = Array(notificationsDict.values)
             }
         })
     }

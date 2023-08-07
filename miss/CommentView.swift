@@ -12,7 +12,6 @@ struct CommentView: View {
     @ObservedObject private var viewModel = TweetViewModel()
     var tweetLikeViewModel: TweetLikeViewModel
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @Binding var showingCommentView: Bool
     
     var body: some View {
         VStack {
@@ -25,7 +24,7 @@ struct CommentView: View {
         .navigationBarItems(leading: Button(action: {
             // 戻るボタンのアクションをここに書きます
             print("modoru1")
-            showingCommentView = false
+          presentationMode.wrappedValue.dismiss()
         }) {
             HStack {
                 Image(systemName: "arrow.backward")
@@ -36,7 +35,7 @@ struct CommentView: View {
             viewModel.sendComment(tweetId: tweetLikeViewModel.tweet.id, text: commentText)
             commentText = ""
             print("modoru2")
-            showingCommentView = false
+          presentationMode.wrappedValue.dismiss()
         }) {
             Text("送信")
         })

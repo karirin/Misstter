@@ -11,4 +11,5 @@ pod 'Firebase/Firestore'
 pod 'Firebase/Storage'
 pod 'Firebase/Database'
 pod 'Firebase/Messaging'
+pod 'Google-Mobile-Ads-SDK'
 end
