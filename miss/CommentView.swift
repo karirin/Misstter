@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CommentView: View {
-    @State private var commentText: String = "comment"
+    @State private var commentText: String = "aaaa"
     @ObservedObject private var viewModel = TweetViewModel()
     var tweetLikeViewModel: TweetLikeViewModel
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>

@@ -60,6 +60,8 @@ struct CachedImage: View {
             if loader.image != nil {
                 Image(uiImage: loader.image!)
                     .resizable()
+                    .aspectRatio(contentMode: .fill) // or .fill
+
             } else {
                 ProgressView()
             }

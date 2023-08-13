@@ -122,7 +122,6 @@ struct DetailView: View {
                                 HStack{
                                     Text(comment.userName)
                                         .fontWeight(.bold)
-                                        
                                     Text(timeAgoSinceDate(comment.createdAt)) // ここでコメントの作成時間を表示します
                                                         .font(.footnote)
                                                         .foregroundColor(.gray)
@@ -140,6 +139,8 @@ struct DetailView: View {
                                                     .resizable()
                                                     .scaledToFill()
                                                     .frame(width:50,height:50)
+                                                    .padding(.bottom,-15)
+                                                    .padding(.top,-10)
                                             }
                                         }
                                     }

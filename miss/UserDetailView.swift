@@ -54,6 +54,7 @@ struct UserDetailView: View {
                         if let userIconURL = URL(string: user.icon ?? "") {
                             AsyncImage(url: userIconURL) { image in // 非同期で画像をロード
                                 image.resizable()
+                                    .aspectRatio(contentMode: .fill)
                             } placeholder: {
                                 ProgressView() // プレースホルダー
                             }

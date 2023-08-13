@@ -8,8 +8,16 @@
 import SwiftUI
 
 class LikeButtonViewModel: ObservableObject {
-    @Published var isLiked: Bool
-    @Published var likesCount: Int
+    @Published var isLiked: Bool {
+        didSet {
+            print("isLiked changed to \(isLiked)")
+        }
+    }
+    @Published var likesCount: Int {
+        didSet {
+            print("likesCount changed to \(likesCount)")
+        }
+    }
     var toggleLike: () -> Void
 
     init(isLiked: Bool, likesCount: Int, toggleLike: @escaping () -> Void) {

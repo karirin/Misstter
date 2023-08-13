@@ -10,7 +10,7 @@ import SwiftUI
 struct SignUp: View {
     @ObservedObject private var viewModel = TweetViewModel()
     @ObservedObject private var authManager = AuthManager.shared
-    @State private var userName: String = "りょうや2"
+    @State private var userName: String = "りょうた"
     @State private var showImagePicker: Bool = false
 
     var body: some View {

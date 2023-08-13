@@ -40,7 +40,7 @@ struct Comment: Identifiable, Hashable {
                 private var db = Database.database().reference()
 
                 func fetchData() {
-                    db.child("tweets").queryOrdered(byChild: "createdAt").observe(.value, with: { [weak self] (snapshot) in
+                    db.child("tweets").queryOrdered(byChild: "createdAt").observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
                         guard let self = self else { return }
                         
                         var newTweetLikeViewModels: [TweetLikeViewModel] = []

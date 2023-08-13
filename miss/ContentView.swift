@@ -44,18 +44,21 @@ struct ContentView: View {
                             if let userIconURL = URL(string: authManager.user?.icon ?? "") {
                                 AsyncImage(url: userIconURL) { image in // 非同期で画像をロード
                                     image.resizable()
+                                        .aspectRatio(contentMode: .fill)
                                 } placeholder: {
                                     ProgressView() // プレースホルダー
                                 }
                                 .frame(width: 40, height: 40) // サイズを設定
                                 .clipShape(Circle()) // 円形にクリップ
                                 .padding(.leading)
+//                                .padding(.top,5)
                             } else {
                                 Image(systemName: "person.fill")
                                     .resizable()
                                     .frame(width: 40, height: 40)
                                     .clipShape(Circle())
                                     .padding(.leading)
+//                                    .padding(.top,5)
                             }
                         }
                     }
@@ -92,16 +95,16 @@ struct ContentView: View {
                 NavigationLink(destination: NotificationView(viewModel: NotificationViewModel(), tweetViewModel: viewModel), isActive: $showNotificationView) {
                     EmptyView()
                 }
-                AdMobBannerView()
-                    .frame(height:40)
-                    .padding(.bottom,-10)
-                    .padding(.top)
+//                AdMobBannerView()
+//                    .frame(height:40)
+//                    .padding(.bottom,-10)
+//                    .padding(.top)
                 ScrollView {
                     RefreshControl(coordinateSpaceName: "RefreshControl", onRefresh: {
                         print("doRefresh()")
                     })
                     VStack {
-                        ForEach(viewModel.tweetLikeViewModels, id: \.tweet.id) { tweetLikeViewModel in
+                        ForEach(viewModel.tweetLikeViewModels.sorted(by: { $0.tweet.createdAt > $1.tweet.createdAt }), id: \.tweet.id) { tweetLikeViewModel in
                             NavigationLink(destination: DetailView(tweetLikeViewModel: tweetLikeViewModel, viewModel: viewModel, tweet: tweetLikeViewModel.tweet, tweetId: tweetLikeViewModel.tweet.id)) {
                                 HStack{
                                     VStack{
@@ -128,6 +131,7 @@ struct ContentView: View {
                                                     HStack{
                                                         Text(tweetLikeViewModel.tweet.text)
                                                             .multilineTextAlignment(.leading)
+                                                            .fixedSize(horizontal: false, vertical: true)
                                                             .frame(maxWidth:.infinity, alignment: .leading)
                                                     }
                                                 }
@@ -174,14 +178,14 @@ struct ContentView: View {
                             await Task.sleep(1000000000)
                         }
                     }
+                    
                 }
             }
-
         }
         .onAppear() {
-            self.viewModel.fetchData() // 既存のデータ取得
-            self.notificationViewModel.fetchNotifications() // 通知の取得
-        }
+self.viewModel.fetchData() // 既存のデータ取得
+self.notificationViewModel.fetchNotifications() // 通知の取得
+}
             .overlay(
                 ZStack {
                     Spacer()
